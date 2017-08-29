@@ -9,4 +9,4 @@
 
 FENGYUE版权所有。
 
-第一步：首先创建一个maven，web工程。eclipse直接新建maven project，可以使用模板创建。同样可以使用简单方法，然后选择war。 创建完成之后，项目右键属性在project facets上首先炫册去掉 dynamic web，apply。之后再选中dynamic web.选中之后 会再页面下出现配置 futher。。。 然后配置生成web.xml;注意是在src/main/webapp下，因为网页部署在这。 把web.xml修改结束标记为</web-app> 
+第一步：首先创建一个maven，web工程。eclipse直接新建maven project，可以使用模板创建。同样可以使用简单方法，然后选择war。 创建完成之后，项目右键属性在project facets上首先炫册去掉 dynamic web，apply。之后再选中dynamic web.选中之后 会再页面下出现配置 futher。。。 然后配置生成web.xml;注意是在src/main/webapp下，因为网页部署在这。 把web.xml修改结束标记为</ web-app > 
