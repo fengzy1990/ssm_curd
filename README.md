@@ -37,4 +37,5 @@ FENGYUE版权所有。
 同时引入jQuery
  <script type="text/javascript" src="static/js/jquery-1.12.4-min.js"></script>
  第五步：配置web.xml spring springmvc mybatis等配置文件。
- 
+ ctrl+shift+t 打开Open Type查找类文件。
+ 第六步：配置springmvc
