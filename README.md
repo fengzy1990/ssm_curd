@@ -40,5 +40,5 @@ FENGYUE版权所有。
  ctrl+shift+t 打开Open Type查找类文件。
  第六步：配置springmvc和spring
  springmvc扫描控制类，spring控制业务
- 
+ 第七步：mybatis逆向生成
  
