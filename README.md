@@ -41,4 +41,4 @@ FENGYUE版权所有。
  第六步：配置springmvc和spring
  springmvc扫描控制类，spring控制业务
  第七步：mybatis逆向生成
- 
+ 第八步：修改mybatis的mapper文件
