@@ -6,7 +6,8 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
-
+	<!-- spring的配置文件 -->
+	<!-- 扫描组件 -->
 	<context:component-scan base-package="com.fengzi">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
@@ -14,7 +15,9 @@
 	<!-- spring配置文件，主要配置和业务逻辑有关的 -->
 
 	<!-- =====数据源，事务控制等核心业务 -->
+	<!-- 读取数据库基本配置 -->
 	<context:property-placeholder location="classpath:dbconfig.properties" />
+
 	<bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
 		<property name="driverClass" value="${jdbc.driverClass}"></property>
@@ -23,7 +26,7 @@
 	</bean>
 	<!-- ======================================数据源，事务控制等核心业务结束 -->
 
-	<!-- =============配置和mybatis的整合================== -->
+	<!-- =============配置spring和mybatis的整合================== -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<!-- 指定mybatis的全局配置 -->
 		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
