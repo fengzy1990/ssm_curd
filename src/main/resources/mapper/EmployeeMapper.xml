@@ -92,7 +92,7 @@
 		e.emp_id,e.emp_name,e.gender,e.email,e.d_id,d.dept_id,d.dept_name
 	</sql>
 	<select id="selectByExample" parameterType="com.fengzi.curd.bean.EmployeeExample"
-		resultMap="WithDeptResultMap">
+		resultMap="BaseResultMap">
 		select
 		<if test="distinct">
 			distinct
@@ -122,12 +122,13 @@
 			order by ${orderByClause}
 		</if>
 	</select>
-	<select id="selectByPrimaryKeyWithDept">
+	<select id="selectByPrimaryKeyWithDept" resultMap="WithDeptResultMap">
 		select
 		<include refid="WithDept_Column_List" />
 		FROM
 		tbl_emp e LEFT JOIN tbl_dept d ON e.`d_id` = d.`dept_id`
-		where emp_id = #{empId,jdbcType=INTEGER}
+		where
+		emp_id = #{empId,jdbcType=INTEGER}
 	</select>
 
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
