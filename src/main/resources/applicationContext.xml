@@ -27,10 +27,11 @@
 	<!-- ======================================数据源，事务控制等核心业务结束 -->
 
 	<!-- =============配置spring和mybatis的整合================== -->
+	<!-- 注意下面的dataSource属性，后面对应的是ref，不是value属性。因为是引用的上面的对象 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<!-- 指定mybatis的全局配置 -->
 		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
-		<property name="dataSource" value="pooledDataSource"></property>
+		<property name="dataSource" ref="pooledDataSource"></property>
 		<!-- mybatis的mapper文件 -->
 		<property name="mapperLocations" value="classpath:mapper/*.xml"></property>
 	</bean>
@@ -42,6 +43,13 @@
 	</bean>
 	<!-- ======================================配置和mybatis的整合结束 -->
 
+	<!-- 配置一个可以执行批量的sqlSession -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+		<constructor-arg name="executorType" value="BATCH" ></constructor-arg>
+	</bean>
+	
+	
 	<!-- ============事务控制================= -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
