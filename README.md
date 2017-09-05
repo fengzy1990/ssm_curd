@@ -42,3 +42,8 @@ FENGYUE版权所有。
  springmvc扫描控制类，spring控制业务
  第七步：mybatis逆向生成
  第八步：修改mybatis的mapper文件
+ 第九步：搭建spring的测试环境。
+2017年9月5日23:19:49
+修改之前bug，测试不通过问题。
+mappertest已经能够成功插入数据库中数据.
+在部门和职工类中添加了构造方法。
