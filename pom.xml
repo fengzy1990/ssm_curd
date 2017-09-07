@@ -5,7 +5,10 @@
 	<artifactId>ssm_curd</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-
+	<!-- 设置工程编码 -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
 	<dependencies>
