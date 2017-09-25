@@ -20,6 +20,7 @@ import com.fengzi.curd.dao.EmployeeMapper;
  * 测试dao层
  * 
  * @author Administrator 推荐spring的项目可以使用spring的单元测试，可以自动注入需要的组件
+ * 该为测试类，测试对数据库的操作，数据的CURD操作。
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext.xml" })

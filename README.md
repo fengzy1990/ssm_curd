@@ -47,3 +47,19 @@ FENGYUE版权所有。
 修改之前bug，测试不通过问题。
 mappertest已经能够成功插入数据库中数据.
 在部门和职工类中添加了构造方法。
+第十步：实现查询
+1、首先访问INDEX.JSP页面；2、Index.jsp页面发出查询员工请求。
+3、EmployeeController来接受请求，查出员工数据；4、来到list.jsp页面展示。
+引入了PageHelper包，
+<!-- 引入pagehelper插件 -->
+<dependency>
+	<groupId>com.github.pagehelper</groupId>
+	<artifactId>pagehelper</artifactId>
+	<version>5.0.0</version>
+</dependency>
+在mybatis-config.xml中配置数据
+<plugins>
+	<!-- com.github.pagehelper为PageHelper类所在包名 -->
+	<plugin interceptor="com.github.pagehelper.PageInterceptor">
+	</plugin>
+</plugins>
