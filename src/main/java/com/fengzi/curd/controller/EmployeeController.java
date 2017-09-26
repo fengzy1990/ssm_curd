@@ -40,6 +40,6 @@ public class EmployeeController {
 		PageInfo page = new PageInfo(emps, 5);
 		model.addAttribute("pageInfo", page);
 		
-		return "list";
+		return "List";
 	}
 }
