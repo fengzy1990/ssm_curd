@@ -39,7 +39,7 @@ public class EmployeeController {
 		// 包装了详细的分页信息，包括查询出的结果。后面参数5表示连续显示5页
 		PageInfo page = new PageInfo(emps, 5);
 		model.addAttribute("pageInfo", page);
-		
-		return "List";
+		System.out.println("program  have started here!!");
+		return "list";
 	}
 }
