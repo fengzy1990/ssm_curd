@@ -63,3 +63,10 @@ mappertest已经能够成功插入数据库中数据.
 	<plugin interceptor="com.github.pagehelper.PageInterceptor">
 	</plugin>
 </plugins>
+第十一步：index.jsp跳转到list.jsp问题解决。
+解决问题：运行tomcat服务器，一定要在新建的server内，双击，server locations中选user tomcat installtion。
+并且设置部署位置由默认的wstwebapps变为webapps
+第二：当时创建maven项目的时候，需要转为web项目，并且设置content根目录。
+这边一定要设置准确，因为我们把web页面放在了/src/main/webapp内，并且web.xml文件也放置在内，
+项目→proPerties→project facets，首先勾掉Dynamic web module确定，然后在选中，选中后会出现一行设置属性的文字（futher configuration availe...），点击进入,content directory中输入/src/main/webapp；这样web.xml就生成在该目录，tomcat服务器也能访问到了。
+设置

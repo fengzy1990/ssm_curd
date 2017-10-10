@@ -26,14 +26,45 @@
 	<div class="container">
 		<!-- 标题 -->
 		<div class="row">
-		<div class="col-md-12">
+			<div class="col-md-12">
 		<h1>SSM-CURD</h1>
-		</div>
+			</div>
 		</div>
 		<!-- 按钮 -->
-		<div class="row"></div>
+		<div class="row">
+			 <div class="col-md-4 col-md-offset-8">
+			 <button type="button" class="btn btn-primary">新增</button>
+			 <button type="button" class="btn btn-danger">删除</button>
+			 </div>
+		</div>
 		<!-- 表格数据 -->
-		<div class="row"></div>
+		<div class="row">
+			<div class="col-md-12">
+			<table>
+				<tr>
+					<th>#</th>
+					<th>empName</th>
+					<th>gender</th>
+					<th>email</th>
+					<th>deptName</th>
+					<th>操作</th>
+				</tr>
+				<tr>
+					<th>1</th>
+					<th>aa</th>
+					<th>a</th>
+					<th>a</th>
+					<th>aa</th>
+					<th>
+					<button type="button" class="btn btn-info"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>编辑
+					</button>
+					<button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>删除
+					</button>
+					</th>
+				</tr>
+			</table>
+			</div>
+		</div>
 		<!-- 分页信息 -->
 		<div class="row"></div>
 </body>
