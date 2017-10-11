@@ -69,4 +69,10 @@ mappertest已经能够成功插入数据库中数据.
 第二：当时创建maven项目的时候，需要转为web项目，并且设置content根目录。
 这边一定要设置准确，因为我们把web页面放在了/src/main/webapp内，并且web.xml文件也放置在内，
 项目→proPerties→project facets，首先勾掉Dynamic web module确定，然后在选中，选中后会出现一行设置属性的文字（futher configuration availe...），点击进入,content directory中输入/src/main/webapp；这样web.xml就生成在该目录，tomcat服务器也能访问到了。
-设置
+第十二步：
+已经使用了index.jsp页面发送请求返回查询数据，接下来该改造查询，使用ajax方式
+1、index.jsp页面直接发送ajax请求进行员工分页数据的查询
+2、服务器将查询出的数据，以json的格式返回，当然也可以返回给浏览器，也可以手机端。
+3、浏览器接收到json字符串，使用js进行解析，使用js通过dom增删改改变有河面。
+4、返回json可以实现客户端的无关性。
+2017年10月11日21:11:05 修正bug，修正查询出的数据不带员工部门名称。EmployeeService类中调用的方法为不带部门的方法，修正为带部门方法，即能正确查询。

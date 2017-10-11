@@ -17,7 +17,7 @@ public class EmployeeService {
 	//查询所有员工，这不是一个分页查询
 	public List<Employee> getALL() {
 		// TODO Auto-generated method stub
-		return employeeMapper.selectByExample(null);
+		return employeeMapper.selectByExampleWithDept(null);
 	}
 
 }

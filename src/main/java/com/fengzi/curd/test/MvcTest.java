@@ -62,6 +62,7 @@ public class MvcTest {
 		List<Employee> list = pi.getList();
 		for (Employee employee : list) {
 			System.out.println("ID:" + employee.getEmpId() + "===Name:" + employee.getEmpName());
+			System.out.println( "deptname:" + employee.getDepartment().getDeptName());
 		}
 	}
 }

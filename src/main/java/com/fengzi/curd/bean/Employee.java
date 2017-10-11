@@ -13,18 +13,18 @@ public class Employee {
 	// 在员工bean中添加部门信息
 	private Department department;
 
-	
 	public Employee() {
 		super();
 	}
 
-	public Employee(Integer empId, String empName, String gender, String email, Integer dId) {
+	public Employee(Integer empId, String empName, String gender, String email, Integer dId, Department department) {
 		super();
 		this.empId = empId;
 		this.empName = empName;
 		this.gender = gender;
 		this.email = email;
 		this.dId = dId;
+		this.department = department;
 	}
 
 	public Department getDepartment() {
