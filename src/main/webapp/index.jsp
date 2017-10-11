@@ -15,7 +15,7 @@
  -->
 <!-- 引入jQuery样式 -->
 <script type="text/javascript"
-	src="${APP_PATH}/static/js/jquery-1.12.4-min.js"></script>
+	src="${APP_PATH}/static/js/jquery-1.12.4.min.js"></script>
 <!-- 引入样式 -->
 <link
 	href="${APP_PATH}/static/bootstrap-3.3.7-dist/css/bootstrap.min.css"
@@ -42,16 +42,20 @@
 		<!-- 表格数据 -->
 		<div class="row">
 			<div class="col-md-12">
-				<table class="table table-hover">
-					<tr>
-						<th>#</th>
-						<th>empName</th>
-						<th>gender</th>
-						<th>email</th>
-						<th>deptName</th>
-						<th>操作</th>
-					</tr>
+				<table class="table table-hover" id="emps_table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>empName</th>
+							<th>gender</th>
+							<th>email</th>
+							<th>deptName</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
 
+					</tbody>
 				</table>
 			</div>
 		</div>
@@ -65,14 +69,46 @@
 		//页面加载完成后，发送ajax请求，得到分页数据
 		$(function() {
 			$.ajax({
-				url:"${APP_PATH}/empsjson",
-				data:"pn=1",
-				type:"GET",
-				success:function(result) {
-					console.log(result);
+				url : "${APP_PATH}/empsjson",
+				data : "pn=1",
+				type : "GET",
+				success : function(result) {
+					//console.log(result);
+					//请求成功后，解析json,显示员工和分页信息
+					build_emps_table(result);
 				}
 			});
 		});
+		function build_emps_table(result) {
+			var emps = result.extend.pageInfo.list;
+			$.each(emps, function(index, item) {
+				//alert(item.empName);
+				var empIdTd=$("<td></td>").append(item.empId);
+				var empNameTd=$("<td></td>").append(item.empName);
+				var genderTd=$("<td></td>").append(item.gender=="M"?"男":"女");
+				var emailTd=$("<td></td>").append(item.email);
+				var deptNameTd=$("<td></td>").append(item.department.deptName);
+				var editBtn=$("<button></button>").addClass("btn btn-info btn-sm")
+				.append($("<span></span>")
+						.addClass("glyphicon glyphicon-pencil"))
+						.append(" 编辑");
+				var delBtn=$("<button></button>").addClass("btn btn-warning btn-sm")
+												.append($("<span></span>")
+														.addClass("glyphicon glyphicon-trash"))
+														.append(" 删除");
+				var btnTd=$("<td></td>").append(editBtn).append(delBtn);
+				$("<tr></tr>").append(empIdTd)
+								.append(empNameTd)
+								.append(genderTd)
+								.append(emailTd)
+								.append(deptNameTd)
+								.append(btnTd)
+								.appendTo("#emps_table tbody");
+			});
+		}
+		function build_page_nav(result) {
+
+		}
 	</script>
 </body>
 </html>
