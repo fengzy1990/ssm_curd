@@ -61,54 +61,139 @@
 		</div>
 		<!-- 分页信息 -->
 		<div class="row">
-			<div class="col-md-6">当前第 页，共 页，共 条记录</div>
-			<div class="clo-md-6"></div>
+			<div class="col-md-6" id="page_info_area"></div>
+			<div class="clo-md-6" id="page_nav_area"></div>
 		</div>
 	</div>
 	<script type="text/javascript">
 		//页面加载完成后，发送ajax请求，得到分页数据
 		$(function() {
+			to_page(1);
+
+		});
+		function to_page(pn) {
 			$.ajax({
 				url : "${APP_PATH}/empsjson",
-				data : "pn=1",
+				data : "pn=" + pn,
 				type : "GET",
 				success : function(result) {
 					//console.log(result);
 					//请求成功后，解析json,显示员工和分页信息
 					build_emps_table(result);
+					build_page_info(result);
+					build_page_nav(result);
 				}
 			});
-		});
+		}
+		//显示每条职工数据函数
 		function build_emps_table(result) {
+			$("#emps_table tbody").empty();
 			var emps = result.extend.pageInfo.list;
 			$.each(emps, function(index, item) {
 				//alert(item.empName);
-				var empIdTd=$("<td></td>").append(item.empId);
-				var empNameTd=$("<td></td>").append(item.empName);
-				var genderTd=$("<td></td>").append(item.gender=="M"?"男":"女");
-				var emailTd=$("<td></td>").append(item.email);
-				var deptNameTd=$("<td></td>").append(item.department.deptName);
-				var editBtn=$("<button></button>").addClass("btn btn-info btn-sm")
-				.append($("<span></span>")
-						.addClass("glyphicon glyphicon-pencil"))
-						.append(" 编辑");
-				var delBtn=$("<button></button>").addClass("btn btn-warning btn-sm")
-												.append($("<span></span>")
-														.addClass("glyphicon glyphicon-trash"))
-														.append(" 删除");
-				var btnTd=$("<td></td>").append(editBtn).append(delBtn);
-				$("<tr></tr>").append(empIdTd)
-								.append(empNameTd)
-								.append(genderTd)
-								.append(emailTd)
-								.append(deptNameTd)
-								.append(btnTd)
-								.appendTo("#emps_table tbody");
+				var empIdTd = $("<td></td>").append(item.empId);
+				var empNameTd = $("<td></td>").append(item.empName);
+				var genderTd = $("<td></td>").append(
+						item.gender == "M" ? "男" : "女");
+				var emailTd = $("<td></td>").append(item.email);
+				var deptNameTd = $("<td></td>")
+						.append(item.department.deptName);
+				var editBtn = $("<button></button>").addClass(
+						"btn btn-info btn-sm").append(
+						$("<span></span>").addClass(
+								"glyphicon glyphicon-pencil")).append(" 编辑");
+				var delBtn = $("<button></button>").addClass(
+						"btn btn-warning btn-sm").append(
+						$("<span></span>")
+								.addClass("glyphicon glyphicon-trash")).append(
+						" 删除");
+				var btnTd = $("<td></td>").append(editBtn).append(delBtn);
+				$("<tr></tr>").append(empIdTd).append(empNameTd).append(
+						genderTd).append(emailTd).append(deptNameTd).append(
+						btnTd).appendTo("#emps_table tbody");
 			});
 		}
+		//解析分页信息
+		function build_page_info(result) {
+			$("#page_info_area").empty();
+			$("#page_info_area").append(
+					"当前第" + result.extend.pageInfo.pageNum + "页，共"
+							+ result.extend.pageInfo.pages + "页，共"
+							+ result.extend.pageInfo.total + "条记录");
+		}
+		//解析分页条数据
 		function build_page_nav(result) {
+			$("#page_nav_area").empty();
+			var ul = $("<ul></ul>").addClass("pagination");
+			var firstPageLi = $("<li></li>").append(
+					$("<a></a>").append("首页").attr("href", "#"));
+			var prePageLi = $("<li></li>").append(
+					$("<a></a>").append("&laquo;"));
+			if (!result.extend.pageInfo.hasPreviousPage) {
+				firstPageLi.addClass("disabled");
+				prePageLi.addClass("disabled");
+			} else {
+				//绑定点击事件
+				firstPageLi.click(function() {
+					to_page(1);
+				});
+				prePageLi.click(function() {
+					to_page(result.extend.pageInfo.pageNum - 1);
+				});
+			}
+			var nextPageLi = $("<li></li>").append(
+					$("<a></a>").append("&raquo;"));
+			var lastPageLi = $("<li></li>").append(
+					$("<a></a>").append("末页").attr("href", "#"));
+			if (!result.extend.pageInfo.hasNextPage) {
+				nextPageLi.addClass("diasbled");
+				lastPageLi.addClass("disabled");
+			} else {
+				nextPageLi.click(function() {
+					to_page(result.extend.pageInfo.pageNum + 1);
+				});
+				lastPageLi.click(function() {
+					to_page(result.extend.pageInfo.pages);
+				});
+			}
+			ul.append(firstPageLi).append(prePageLi);
+			$.each(result.extend.pageInfo.navigatepageNums, function(index,
+					item) {
+				var numPageLi = $("<li></li>")
+						.append($("<a></a>").append(item));
+				if (result.extend.pageInfo.pageNum == item) {
+					numPageLi.addClass("active");
+				}
+				numPageLi.click(function() {
+					to_page(item);
+				});
+				ul.append(numPageLi);
 
+			});
+			ul.append(nextPageLi).append(lastPageLi);
+			var navEle = $("<nav></nav>").append(ul);
+			navEle.appendTo("#page_nav_area");
 		}
 	</script>
 </body>
+<!-- 员工新增弹窗 -->
+<div class="modal fade" id="empModel" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+			</div>
+			<div class="modal-body">...</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
 </html>
