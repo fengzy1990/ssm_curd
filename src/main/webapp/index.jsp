@@ -198,15 +198,15 @@
 					});
 				}
 			});
-		}
+		};
 		
 		$("#emp_save_btn").click(function(){
 			//提交表单数据保存
 			$.ajax({
-				url:"${APP_PATH}/emp",
-				type:"POST",
-				data:$("empAddModal form").serialize(),
-				success:function(result){
+				url : "${APP_PATH}/emp",
+				type : "POST",
+				data : $("#empAddModal form").serialize(),
+				success : function(result){
 					alert(result.msg);
 					//保存成功，关闭模态框，跳转到最后一页，显示插入的数据
 					$("#empAddModal").modal('hide');
