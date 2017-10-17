@@ -87,3 +87,10 @@ mappertest已经能够成功插入数据库中数据.
 /emp      POST,保存员工
 /emp/{id} PUT,修改员工
 /emp/{id} DELETE,删除员工
+注意：在弹出的职工新增功能模态框中，给保存按钮添加事件时，直接使用$("#").click...并不能触发点击事件。
+需要在外层添加延迟加载,如下：
+setTimeout(function(){
+$("#btn").click(function(){
+....
+})
+})
