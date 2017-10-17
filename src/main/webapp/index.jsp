@@ -186,6 +186,7 @@
 				backdrop : "static"
 			});
 		});
+	
 		function getDepts(){
 			$.ajax({
 				url:"${APP_PATH}/depts",
@@ -198,8 +199,9 @@
 					});
 				}
 			});
-		};
-		
+		}
+		//为保存按钮添加事件
+		setTimeout(function(){
 		$("#emp_save_btn").click(function(){
 			//提交表单数据保存
 			$.ajax({
@@ -207,13 +209,13 @@
 				type : "POST",
 				data : $("#empAddModal form").serialize(),
 				success : function(result){
-					alert(result.msg);
 					//保存成功，关闭模态框，跳转到最后一页，显示插入的数据
 					$("#empAddModal").modal('hide');
 					to_page(totalRecord);
 				}
 			});
 		});
+		})
 	</script>
 </body>
 <!-- 员工新增弹窗 -->
@@ -266,7 +268,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="emp_close.btn">关闭</button>
 				<button type="button" class="btn btn-primary" id="emp_save_btn">保存</button>
 			</div>
 		</div>
