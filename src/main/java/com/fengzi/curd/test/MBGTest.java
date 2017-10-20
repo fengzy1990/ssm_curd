@@ -12,7 +12,12 @@ import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
-
+/**
+ * 
+ * @author FengZY
+ * mybatis逆向生成mapper文件，生成各种对数据库数据的操作方法
+ *
+ */
 public class MBGTest {
 	public static void main(String[] args)
 			throws SQLException, IOException, InterruptedException, InvalidConfigurationException, XMLParserException {
