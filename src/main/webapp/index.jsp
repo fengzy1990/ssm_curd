@@ -180,41 +180,85 @@
 		$("#emp_add_modal_btn").click(function() {
 			//发送ajax请求，查出部门名称
 			getDepts();
-			
+
 			//弹出模态框
 			$("#empAddModal").modal({
 				backdrop : "static"
 			});
 		});
-	
-		function getDepts(){
+
+		function getDepts() {
 			$.ajax({
-				url:"${APP_PATH}/depts",
-				type:"get",
-				success:function(result){
+				url : "${APP_PATH}/depts",
+				type : "get",
+				success : function(result) {
 					//console.log(result);
-					$.each(result.extend.depts,function(){
-						var optionEle=$("<option></option>").append(this.deptName).attr("value",this.deptId);
+					$.each(result.extend.depts, function() {
+						var optionEle = $("<option></option>").append(
+								this.deptName).attr("value", this.deptId);
 						optionEle.appendTo("#dept_add_select");
 					});
 				}
 			});
 		}
+		//校验函数
+		function validate_add_form() {
+			//首先要拿到数据，使用正则表达式
+			var empName = $("#empName_add_input").val();
+			var regName = /(^[a-zA-Z0-9_-]{4,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
+			if (!regName.test(empName)) {
+				//alert("用户名必须是2-5位中文，或4-16位英文-_组合！");
+				//优化校验回显状态，美化。
+				show_validate_msg("#empName_add_input","error","用户名必须是2-5位中文，或4-16位英文-_组合！");
+				return false;
+			}else{
+				show_validate_msg("#empName_add_input","success","用户名符合规则！");
+			}
+			var email = $("#email_add_input").val();
+			var regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+			if (!regEmail.test(email)) {
+				//alert("邮箱格式不符合规则！");
+				//取消使用弹窗的方式进行提醒，美化校验结果。
+				show_validate_msg("#email_add_input","error","邮箱格式不符合规则！");
+				return false;
+			}else{
+				show_validate_msg("#email_add_input","success","邮箱格式符合规则！");
+			}
+				return true;
+		}
+		//校验信息显示函数
+		function show_validate_msg(element,status,msg){
+			//清除元素的校验状态
+			$(element).removeClass("has-class has-error");
+			$(element).next("span").text("");
+			if("success" == status){
+				$(element).parent().addClass("has-success");
+				$(element).next("span").text(msg);
+			}else if("error" == status){
+				$(element).parent().addClass("has-error");
+				$(element).next("span").text(msg);
+			}
+		}
 		//为保存按钮添加事件
-		setTimeout(function(){
-		$("#emp_save_btn").click(function(){
-			//提交表单数据保存
-			$.ajax({
-				url : "${APP_PATH}/emp",
-				type : "POST",
-				data : $("#empAddModal form").serialize(),
-				success : function(result){
-					//保存成功，关闭模态框，跳转到最后一页，显示插入的数据
-					$("#empAddModal").modal('hide');
-					to_page(totalRecord);
+		setTimeout(function() {
+			$("#emp_save_btn").click(function() {
+				//提交表单数据保存
+				//先提交给服务器进行数据校验
+				if (!validate_add_form()) {
+					return false;
 				}
+				;
+				$.ajax({
+					url : "${APP_PATH}/emp",
+					type : "POST",
+					data : $("#empAddModal form").serialize(),
+					success : function(result) {
+						//保存成功，关闭模态框，跳转到最后一页，显示插入的数据
+						$("#empAddModal").modal('hide');
+						to_page(totalRecord);
+					}
+				});
 			});
-		});
 		})
 	</script>
 </body>
@@ -235,40 +279,42 @@
 					<div class="form-group">
 						<label for="empName_add_input" class="col-sm-2 control-label">empName</label>
 						<div class="col-sm-10">
-							<input type="text" name="empName" class="form-control" id="empName_add_input"
-								placeholder="empName">
+							<input type="text" name="empName" class="form-control"
+								id="empName_add_input" placeholder="empName">
+								<span class="help-block"></span>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="email_add_input" class="col-sm-2 control-label">email</label>
 						<div class="col-sm-10">
-							<input type="text" name="email" class="form-control" id="email_add_input"
-								placeholder="email@fengzi.com">
+							<input type="text" name="email" class="form-control"
+								id="email_add_input" placeholder="email@fengzi.com">
+								<span class="help-block"></span>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="gender_add_input" class="col-sm-2 control-label">gender</label>
 						<div class="col-sm-10">
-							<label class="radio-inline">
- 							<input type="radio" name="gender" id="gender1_add_input" checked="checked" value="M">男
-							</label>
-							<label class="radio-inline">
-  							<input type="radio" name="gender" id="gender2_add_input" value="F">女
+							<label class="radio-inline"> <input type="radio"
+								name="gender" id="gender1_add_input" checked="checked" value="M">男
+							</label> <label class="radio-inline"> <input type="radio"
+								name="gender" id="gender2_add_input" value="F">女
 							</label>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="deptName_add_input" class="col-sm-2 control-label">deptName</label>
 						<div class="col-sm-4">
-							  <select class="form-control" name="dId" id="dept_add_select">
-							  
-							  </select>
+							<select class="form-control" name="dId" id="dept_add_select">
+
+							</select>
 						</div>
-					</div>	
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" id="emp_close.btn">关闭</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"
+					id="emp_close.btn">关闭</button>
 				<button type="button" class="btn btn-primary" id="emp_save_btn">保存</button>
 			</div>
 		</div>
