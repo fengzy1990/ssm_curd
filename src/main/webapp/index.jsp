@@ -177,15 +177,22 @@
 			navEle.appendTo("#page_nav_area");
 		}
 		//ajax请求，绑定点击事件
-		$("#emp_add_modal_btn").click(function() {
-			//发送ajax请求，查出部门名称
-			getDepts();
-
-			//弹出模态框
-			$("#empAddModal").modal({
-				backdrop : "static"
-			});
-		});
+		$("#emp_add_modal_btn").click(
+				function() {
+					//每次弹出模态框，清楚弹出模态框中的数据
+					$("#empAddModal form")[0].reset();
+					$("#empAddModal form").find("*").removeClass(
+							"has-success has-error");
+					$("#empAddModal form").find(".help-block").text("");
+					//$("#empName_add_input").next("span").text(" ");
+					//$("#email_add_input").next("span").text(" ");
+					//发送ajax请求，查出部门名称
+					getDepts();
+					//弹出模态框
+					$("#empAddModal").modal({
+						backdrop : "static"
+					});
+				});
 
 		function getDepts() {
 			$.ajax({
@@ -209,53 +216,105 @@
 			if (!regName.test(empName)) {
 				//alert("用户名必须是2-5位中文，或4-16位英文-_组合！");
 				//优化校验回显状态，美化。
-				show_validate_msg("#empName_add_input","error","用户名必须是2-5位中文，或4-16位英文-_组合！");
+				show_validate_msg("#empName_add_input", "error",
+						"用户名必须是2-5位中文，或4-16位英文-_组合！");
 				return false;
-			}else{
-				show_validate_msg("#empName_add_input","success","用户名符合规则！");
+			} else {
+				show_validate_msg("#empName_add_input", "success", "用户名符合规则！");
 			}
 			var email = $("#email_add_input").val();
 			var regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 			if (!regEmail.test(email)) {
 				//alert("邮箱格式不符合规则！");
 				//取消使用弹窗的方式进行提醒，美化校验结果。
-				show_validate_msg("#email_add_input","error","邮箱格式不符合规则！");
+				show_validate_msg("#email_add_input", "error", "邮箱格式不符合规则！");
 				return false;
-			}else{
-				show_validate_msg("#email_add_input","success","邮箱格式符合规则！");
+			} else {
+				show_validate_msg("#email_add_input", "success", "邮箱格式符合规则！");
 			}
-				return true;
+			return true;
 		}
 		//校验信息显示函数
-		function show_validate_msg(element,status,msg){
+		function show_validate_msg(element, status, msg) {
 			//清除元素的校验状态
-			$(element).removeClass("has-class has-error");
-			$(element).next("span").text("");
-			if("success" == status){
+			$(element).removeClass("has-success has-error");
+			$(element).next("span").text(" ");
+			if ("success" == status) {
 				$(element).parent().addClass("has-success");
 				$(element).next("span").text(msg);
-			}else if("error" == status){
+			} else if ("error" == status) {
 				$(element).parent().addClass("has-error");
 				$(element).next("span").text(msg);
 			}
 		}
+		//为用户名添加事件，内容改变后执行对应函数。
+		setTimeout(function() {
+			$("#empName_add_input").change(
+					function() {
+						//发送ajax请求，校验用户名是否可用
+						var empName = this.value;
+						$
+								.ajax({
+									url : "${APP_PATH}/checkuser",
+									data : "empName=" + empName,
+									type : "post",
+									success : function(result) {
+										if (result.code == 100) {
+											show_validate_msg(
+													"#empName_add_input",
+													"success", "用户名可用!");
+											$("#emp_save_btn").attr("ajax-va",
+													"success");
+										} else {
+											show_validate_msg(
+													"#empName_add_input",
+													"error",
+													result.extend.val_msg);
+											$("#emp_save_btn").attr("ajax-va",
+													"error");
+										}
+									}
+								});
+					});
+		});
 		//为保存按钮添加事件
 		setTimeout(function() {
 			$("#emp_save_btn").click(function() {
 				//提交表单数据保存
-				//先提交给服务器进行数据校验
-				if (!validate_add_form()) {
+				//先提交给服务器进行数据校验，这边是前端校验，即使绕过前段校验，还有后端JSR303校验
+				 if (!validate_add_form()) {
+					return false;
+				} 
+				//在执行ajax请求，首先要拿到ajax请求的校验值
+				if ($(this).attr("ajax-va") == "error") {
 					return false;
 				}
-				;
 				$.ajax({
 					url : "${APP_PATH}/emp",
 					type : "POST",
 					data : $("#empAddModal form").serialize(),
 					success : function(result) {
-						//保存成功，关闭模态框，跳转到最后一页，显示插入的数据
-						$("#empAddModal").modal('hide');
-						to_page(totalRecord);
+						if (result.code == 100) {
+							//保存成功，关闭模态框，跳转到最后一页，显示插入的数据
+							$("#empAddModal").modal('hide');
+							to_page(totalRecord);
+						} else {
+							//后台显示信息
+							//console.log(result);
+							//那个字段错误信息就显示那个字段的，这里是后端校验，从后端拿到的校验信息
+							/* EmployeeController中定义了email,empName的校验，如果出现错误errorFields中就会
+							出现email，如果没有错误就是出现undefined  */
+							if (undefined != result.extend.errorFields.email) {
+								show_validate_msg(
+										"#email_add_input",
+										"error", result.extend.errorFields.email);
+							}
+							if (undefined != result.extend.errorFields.empName) {
+								show_validate_msg(
+										"#empName_add_input",
+										"error", result.extend.errorFields.empName);
+							}
+						}
 					}
 				});
 			});
@@ -280,16 +339,16 @@
 						<label for="empName_add_input" class="col-sm-2 control-label">empName</label>
 						<div class="col-sm-10">
 							<input type="text" name="empName" class="form-control"
-								id="empName_add_input" placeholder="empName">
-								<span class="help-block"></span>
+								id="empName_add_input" placeholder="empName"> <span
+								class="help-block"></span>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="email_add_input" class="col-sm-2 control-label">email</label>
 						<div class="col-sm-10">
 							<input type="text" name="email" class="form-control"
-								id="email_add_input" placeholder="email@fengzi.com">
-								<span class="help-block"></span>
+								id="email_add_input" placeholder="email@fengzi.com"> <span
+								class="help-block"></span>
 						</div>
 					</div>
 					<div class="form-group">
