@@ -100,14 +100,18 @@
 				var deptNameTd = $("<td></td>")
 						.append(item.department.deptName);
 				var editBtn = $("<button></button>").addClass(
-						"btn btn-info btn-sm").append(
+						"btn btn-info btn-sm update_btn").append(
 						$("<span></span>").addClass(
 								"glyphicon glyphicon-pencil")).append(" 编辑");
+				//为编辑按钮添加自定义属性，可以在更新数据时，知道是哪条数据,不能使用empIdTd，这是一个Object对象
+				editBtn.attr("update-id",item.empId);
 				var delBtn = $("<button></button>").addClass(
-						"btn btn-warning btn-sm").append(
+						"btn btn-warning btn-sm delete_btn").append(
 						$("<span></span>")
 								.addClass("glyphicon glyphicon-trash")).append(
 						" 删除");
+				//删除按钮添加自定义属性，可以在删除数据时，知道是哪条数据
+				delBtn.attr("del-id",item.empId);
 				var btnTd = $("<td></td>").append(editBtn).append(delBtn);
 				$("<tr></tr>").append(empIdTd).append(empNameTd).append(
 						genderTd).append(emailTd).append(deptNameTd).append(
@@ -186,15 +190,17 @@
 					$("#empAddModal form").find(".help-block").text("");
 					//$("#empName_add_input").next("span").text(" ");
 					//$("#email_add_input").next("span").text(" ");
-					//发送ajax请求，查出部门名称
-					getDepts();
+					//发送ajax请求，查出部门名称,以下两种方式都可以
+					//getDepts("#dept_add_select");
+					getDepts("#empAddModal select");
 					//弹出模态框
 					$("#empAddModal").modal({
 						backdrop : "static"
 					});
 				});
 
-		function getDepts() {
+		function getDepts(element) {
+			$(element).empty();
 			$.ajax({
 				url : "${APP_PATH}/depts",
 				type : "get",
@@ -203,7 +209,7 @@
 					$.each(result.extend.depts, function() {
 						var optionEle = $("<option></option>").append(
 								this.deptName).attr("value", this.deptId);
-						optionEle.appendTo("#dept_add_select");
+						optionEle.appendTo(element);
 					});
 				}
 			});
@@ -318,10 +324,65 @@
 					}
 				});
 			});
-		})
+		});
+		//为编辑按钮绑定事件，但是页面首先加载完成后，发送ajax请求得到数据后才显示出编辑删除按钮，所以直接.click（）方法绑定不上。
+		//JQuery有live方法，新的版本没有live方法，用on方法代替。
+			$(document).on("click",".update_btn",function(){
+				//alert("edit");
+				//首先查出员工信息，然后查出部门信息，以下两种方式都可以
+				getDepts("#empUpdateModal select");
+				//getDepts("#dept_update_select");
+				getEmp($(this).attr("update-id"));
+				
+				//把员工id即，编辑按钮上的id传递给更新按钮
+				$("#emp_update_btn").attr("update-id",$(this).attr("update-id"));
+				//弹出模态框
+				$("#empUpdateModal").modal({
+					backdrop : "static"
+				});
+			});
+		function getEmp(id){
+			$.ajax({
+				url:"${APP_PATH}/emp/"+id,
+				type:"GET",
+				success:function(result){
+					//console.log(result);
+					var empData = result.extend.emp;
+					$("#empName_update_static").text(empData.empName);
+					$("#email_update_input").val(empData.email);
+					$("#empUpdateModal input[name=gender]").val([empData.gender]);
+					$("#empUpdateModal select").val([empData.dId]);
+				}
+			})
+		}
+		//点击更新，更新员工信息
+		setTimeout(function(){
+			$("#emp_update_btn").click(function(){
+				//验证邮箱 
+				var email = $("#email_update_input").val();
+				var regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+				if (!regEmail.test(email)) {
+					//alert("邮箱格式不符合规则！");
+					show_validate_msg("#email_update_input", "error", "邮箱格式不符合规则！");
+					return false;
+				} else {
+					show_validate_msg("#email_update_input", "success", "邮箱格式符合规则！");
+				}
+				//发送ajax请求，保存更新的信息
+				$.ajax({
+					url:"${APP_PATH}/emp/"+$(this).attr("update-id"),
+					type:"PUT",
+					data:$("#empUpdateModal form").serialize(),
+					success:function(result){
+						alert(result.msg);
+					}
+					
+				});
+			});	
+		});
 	</script>
 </body>
-<!-- 员工新增弹窗 -->
+<!-- 员工新增模态窗 -->
 <div class="modal fade" id="empAddModal" tabindex="-1" role="dialog"
 	aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
@@ -375,6 +436,64 @@
 				<button type="button" class="btn btn-default" data-dismiss="modal"
 					id="emp_close.btn">关闭</button>
 				<button type="button" class="btn btn-primary" id="emp_save_btn">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 员工修改模态窗 -->
+<div class="modal fade" id="empUpdateModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">员工修改</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="empName_update_input" class="col-sm-2 control-label">empName</label>
+						<div class="col-sm-10">
+								 <p name="empName" class="form-control-static" id="empName_update_static"></p>
+								 <span class="help-block"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="email_update_input" class="col-sm-2 control-label">email</label>
+						<div class="col-sm-10">
+							<input type="text" name="email" class="form-control"
+								id="email_update_input" placeholder="email@fengzi.com"> <span
+								class="help-block"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="gender_update_input" class="col-sm-2 control-label">gender</label>
+						<div class="col-sm-10">
+							<label class="radio-inline"> <input type="radio"
+								name="gender" id="gender1_update_input" checked="checked" value="M">男
+							</label> <label class="radio-inline"> <input type="radio"
+								name="gender" id="gender2_update_input" value="F">女
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="deptName_update_input" class="col-sm-2 control-label">deptName</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="dId" id="dept_update_select">
+
+							</select>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal"
+					id="emp_close.btn">关闭</button>
+				<button type="button" class="btn btn-primary" id="emp_update_btn">更新</button>
 			</div>
 		</div>
 	</div>

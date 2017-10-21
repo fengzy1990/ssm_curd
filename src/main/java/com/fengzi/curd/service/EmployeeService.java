@@ -43,5 +43,24 @@ public class EmployeeService {
 			return false;
 		}
 	}
+	/**
+	 * 按照员工id查询员工
+	 * @param id
+	 * @return
+	 */
+	public Employee getEmp(Integer id) {
+		// TODO Auto-generated method stub
+		Employee employee = employeeMapper.selectByPrimaryKey(id);
+		return employee;
+	}
+	/**
+	 * 更新员工信息方法
+	 * @param employee
+	 */
+	public void updateEmp(Employee employee) {
+		// TODO Auto-generated method stub
+		//按照主键有选择更新
+		employeeMapper.updateByPrimaryKeySelective(employee);
+	}
 
 }

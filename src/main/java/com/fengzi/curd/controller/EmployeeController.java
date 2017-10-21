@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,7 +54,7 @@ public class EmployeeController {
 	}
 
 	/**
-	 * 查询员工数据(分页查询)
+	 * 查询所有员工数据(分页查询)
 	 * 
 	 * @return
 	 */
@@ -101,12 +102,12 @@ public class EmployeeController {
 	@ResponseBody
 	public Msg saveEmp(@Valid Employee employee, BindingResult result) {
 		if (result.hasErrors()) {
-			Map<String, Object> map= new HashMap<>();
+			Map<String, Object> map = new HashMap<>();
 			// 校验失败，应该返回失败信息，显示在模态框中
 			List<FieldError> errors = result.getFieldErrors();
 			for (FieldError fieldError : errors) {
-				System.out.println("错误的字段名："+fieldError.getField());
-				System.out.println("错误的信息："+fieldError.getDefaultMessage());
+				System.out.println("错误的字段名：" + fieldError.getField());
+				System.out.println("错误的信息：" + fieldError.getDefaultMessage());
 				map.put(fieldError.getField(), fieldError.getDefaultMessage());
 			}
 			return Msg.fail().add("errorFields", map);
@@ -114,5 +115,36 @@ public class EmployeeController {
 			employeeService.saveEmp(employee);
 			return Msg.success();
 		}
+	}
+
+	/**
+	 * 查询某个员工信息
+	 */
+	@RequestMapping(value = "/emp/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public Msg getEmp(@PathVariable("id") Integer id) {
+		Employee employee = employeeService.getEmp(id);
+		return Msg.success().add("emp", employee);
+	}
+
+	/**
+	 * 更新员工信息
+	 * ajax直接发送PUT请求，封装的Employee数据，除了empId不为空，其余都为null
+	 * form请求体中有数据。
+	 * 
+	 * 原因：tomcat会将请求体中数据封装成一个MAP,requst.getParameter()就会从map中取值。
+	 * springMVC在封装pojo对象，会把每个属性的值用request.geP...封装
+	 * 也就是ajax发送put请求出现问题。put请求体中的数据用request.getP..拿不到数据。
+	 * tomcat发现是put请求，不会封装请求体中的数据为map。只有post请求才会封装成map。
+	 * @param employee
+	 * @return
+	 */
+	@RequestMapping(value = "/emp/{empId}", method = RequestMethod.PUT)
+	@ResponseBody
+	public Msg updateEmp(Employee employee) {
+		//将要更新的员工数据
+		System.out.println(employee);
+		employeeService.updateEmp(employee);
+		return Msg.success();
 	}
 }
