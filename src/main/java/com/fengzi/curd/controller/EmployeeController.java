@@ -136,6 +136,7 @@ public class EmployeeController {
 	 * springMVC在封装pojo对象，会把每个属性的值用request.geP...封装
 	 * 也就是ajax发送put请求出现问题。put请求体中的数据用request.getP..拿不到数据。
 	 * tomcat发现是put请求，不会封装请求体中的数据为map。只有post请求才会封装成map。
+	 * 要支持PUT请求，要在web.xml中配置好HttpPutFormContentFilter
 	 * @param employee
 	 * @return
 	 */
@@ -145,6 +146,12 @@ public class EmployeeController {
 		//将要更新的员工数据
 		System.out.println(employee);
 		employeeService.updateEmp(employee);
+		return Msg.success();
+	}
+	@ResponseBody
+	@RequestMapping(value = "/emp/{id}",method=RequestMethod.DELETE)
+	public Msg deleteEmpById(@PathVariable("id")Integer id){
+		employeeService.deleteEmp(id);
 		return Msg.success();
 	}
 }

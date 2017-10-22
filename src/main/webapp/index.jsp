@@ -66,7 +66,7 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		var totalRecord;//用来调用增加完数据后，用记录数作为页码，这样pageinfo总会显示最后一页
+		var totalRecord,currentNumPage;//用来调用增加完数据后，用记录数作为页码，这样pageinfo总会显示最后一页
 		//页面加载完成后，发送ajax请求，得到分页数据
 		$(function() {
 			to_page(1);
@@ -126,6 +126,7 @@
 							+ result.extend.pageInfo.pages + "页，共"
 							+ result.extend.pageInfo.total + "条记录");
 			totalRecord = result.extend.pageInfo.total;
+			currentNumPage = result.extend.pageInfo.pageNum;
 		}
 		//解析分页条数据
 		function build_page_nav(result) {
@@ -341,6 +342,12 @@
 					backdrop : "static"
 				});
 			});
+			//删除按钮绑定
+			$(document).on("click",".delete_btn",function(){
+				//弹出确认删除
+				//alert($(this).parents("tr").find("td:eq(1)").text());
+				var empName=$(this).parents("tr").find("td:eq(1)").text();
+			});
 		function getEmp(id){
 			$.ajax({
 				url:"${APP_PATH}/emp/"+id,
@@ -374,7 +381,35 @@
 					type:"PUT",
 					data:$("#empUpdateModal form").serialize(),
 					success:function(result){
-						alert(result.msg);
+						//alert(result.msg);
+						if(result.code == 100){
+						$("#empUpdateModal").modal("hide");
+						to_page(currentNumPage);
+						}else{
+						alert("更新失败！");							
+						}
+					}
+					
+				});
+			});	
+		});
+		//点击删除员工信息
+		setTimeout(function(){
+			$("#emp_update_btn").click(function(){
+				
+				//发送ajax请求，保存更新的信息
+				$.ajax({
+					url:"${APP_PATH}/emp/"+$(this).attr("update-id"),
+					type:"PUT",
+					data:$("#empUpdateModal form").serialize(),
+					success:function(result){
+						//alert(result.msg);
+						if(result.code == 100){
+						$("#empUpdateModal").modal("hide");
+						to_page(currentNumPage);
+						}else{
+						alert("更新失败！");							
+						}
 					}
 					
 				});
