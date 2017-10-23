@@ -62,10 +62,24 @@ public class EmployeeService {
 		//按照主键有选择更新
 		employeeMapper.updateByPrimaryKeySelective(employee);
 	}
-
+	/**
+	 * 按照员工id单个删除
+	 * @param id
+	 */
 	public void deleteEmp(Integer id) {
 		// TODO Auto-generated method stub
 		employeeMapper.deleteByPrimaryKey(id);
+	}
+	/**
+	 * 员工批量删除
+	 * @param ids
+	 */
+	public void deleteBatch(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		EmployeeExample example = new EmployeeExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andEmpIdIn(ids);
+		employeeMapper.deleteByExample(example);
 	}
 
 }

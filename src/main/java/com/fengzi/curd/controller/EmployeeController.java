@@ -5,6 +5,7 @@ package com.fengzi.curd.controller;
  * 处理员工的CURD请求
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,10 +149,41 @@ public class EmployeeController {
 		employeeService.updateEmp(employee);
 		return Msg.success();
 	}
-	@ResponseBody
+	/**
+	 * 单个删除，已经和下面的批量删除组合到一起。
+	 * @param id
+	 * @return
+	 */
+	/*@ResponseBody
 	@RequestMapping(value = "/emp/{id}",method=RequestMethod.DELETE)
 	public Msg deleteEmpById(@PathVariable("id")Integer id){
 		employeeService.deleteEmp(id);
+		return Msg.success();
+	}*/
+	
+	
+	
+	/**
+	 * 支持批量删除
+	 * 1001-1002
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/emp/{ids}",method=RequestMethod.DELETE)
+	public Msg deleteEmp(@PathVariable("ids")String ids){
+		if (ids.contains("-")) {
+			List<Integer>  del_list =new ArrayList<>();
+			String[] str_ids=ids.split("-");
+			for (String id : str_ids) {
+				del_list.add(Integer.parseInt(id));
+			}
+			System.out.println(del_list.toString());
+			employeeService.deleteBatch(del_list);
+		} else {
+			Integer id = Integer.parseInt(ids);
+			employeeService.deleteEmp(id);
+		}
 		return Msg.success();
 	}
 }

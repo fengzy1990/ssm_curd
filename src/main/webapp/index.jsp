@@ -36,7 +36,7 @@
 		<div class="row">
 			<div class="col-md-4 col-md-offset-8">
 				<button type="button" class="btn btn-primary" id="emp_add_modal_btn">新增</button>
-				<button type="button" class="btn btn-danger">删除</button>
+				<button type="button" class="btn btn-danger" id="emp_delete_all_btn">删除</button>
 			</div>
 		</div>
 		<!-- 表格数据 -->
@@ -45,6 +45,9 @@
 				<table class="table table-hover" id="emps_table">
 					<thead>
 						<tr>
+							<th>
+								<input type="checkbox" id="check_all"/>
+							</th>
 							<th>#</th>
 							<th>empName</th>
 							<th>gender</th>
@@ -92,6 +95,7 @@
 			var emps = result.extend.pageInfo.list;
 			$.each(emps, function(index, item) {
 				//alert(item.empName);
+				var checkBoxId =$("<td><input type='checkbox' class='check_item'/></td>");
 				var empIdTd = $("<td></td>").append(item.empId);
 				var empNameTd = $("<td></td>").append(item.empName);
 				var genderTd = $("<td></td>").append(
@@ -113,7 +117,7 @@
 				//删除按钮添加自定义属性，可以在删除数据时，知道是哪条数据
 				delBtn.attr("del-id",item.empId);
 				var btnTd = $("<td></td>").append(editBtn).append(delBtn);
-				$("<tr></tr>").append(empIdTd).append(empNameTd).append(
+				$("<tr></tr>").append(checkBoxId).append(empIdTd).append(empNameTd).append(
 						genderTd).append(emailTd).append(deptNameTd).append(
 						btnTd).appendTo("#emps_table tbody");
 			});
@@ -346,7 +350,7 @@
 			$(document).on("click",".delete_btn",function(){
 				//弹出确认删除
 				//alert($(this).parents("tr").find("td:eq(1)").text());
-				var empName=$(this).parents("tr").find("td:eq(1)").text();
+				var empName=$(this).parents("tr").find("td:eq(2)").text();
 				var empId =$(this).attr("del-id");
 				if(confirm("确认删除【"+empName+"】吗？")){
 					//去人删除ajax请求。
@@ -428,6 +432,43 @@
 				});
 			});	
 		});
+		//完成全选或全不选功能
+		$("#check_all").click(function(){
+			//attr获取checkbox的原生属性checked是undefined，原生属性用prop方法获得。attr获取自定义属性
+			//alert($(this).prop("checked"));
+			$(".check_item").prop("checked",$(this).prop("checked"));
+		});
+		//为每个check_item绑定点击事件，当一页的都选中后，check_all也设置为true.
+		//因为check_item也是后来创建的，所以也用on方法绑定。
+		$(document).on("click",".check_item",function(){
+			//判断当前选择个数是否全部选中
+			var flag = $(".check_item:checked").length==$(".check_item").length
+				$("#check_all").prop("checked",flag);
+		});
+		//批量删除
+		$("#emp_delete_all_btn").click(function(){
+			var	empNames="";//用于显示
+			var empDelIds="";//用于标记删除
+			//遍历状态为checked的check_item
+			$.each($(".check_item:checked"),function(){
+				//找到check_item的父元素tr，然后找到第三个td
+				empNames +=$(this).parents("tr").find("td:eq(2)").text()+"，";
+				empDelIds +=$(this).parents("tr").find("td:eq(1)").text()+"-"
+			});
+			//去除字符串最后一位逗号。
+			empNames=empNames.substring(0,empNames.length-1);
+			empDelIds=empDelIds.substring(0,empDelIds.length-1);
+			if(confirm("确认这些【"+empNames+"】都删除吗？")){
+				$.ajax({
+					url:"${APP_PATH}/emp/"+empDelIds,
+					type:"DELETE",
+					success:function(result){
+						alert(result.msg);
+						to_page(currentNumPage);
+					}
+				});
+			}
+		})
 	</script>
 </body>
 <!-- 员工新增模态窗 -->
