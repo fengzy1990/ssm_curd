@@ -105,5 +105,7 @@ $("#btn").click(function(){
 3、导入了Hibernate-validate包，用于JSR303校验。
 JSR303校验直接在Employee bean中进行写入。同时在controller中控制逻辑返回。
 第十六步：实现修改逻辑
-
+第十七步：
+2017年10月23日20:52:20
+完成删除逻辑。
 

@@ -347,6 +347,19 @@
 				//弹出确认删除
 				//alert($(this).parents("tr").find("td:eq(1)").text());
 				var empName=$(this).parents("tr").find("td:eq(1)").text();
+				var empId =$(this).attr("del-id");
+				if(confirm("确认删除【"+empName+"】吗？")){
+					//去人删除ajax请求。
+					$.ajax({
+						url:"${APP_PATH}/emp/"+empId,
+						type:"DELETE",
+						success:function(result){
+							//alert(result.msg);
+							to_page(currentNumPage);
+						}
+					});
+					
+				}
 			});
 		function getEmp(id){
 			$.ajax({
