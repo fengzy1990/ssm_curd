@@ -112,4 +112,16 @@ JSR303校验直接在Employee bean中进行写入。同时在controller中控制
 $('#XXX') 对应的id元素
 $('.XXX') 对应的class元素
 2017年10月23日22:26:18 已经完成了项目的批量删除，至此完成了项目的所有功能。
+第十九步：
+总结：
+UI(bootstrap)->发起请求到水平mvc控制器(对应有dispatcherServlet-servlet.xml)->controller
+→service→Dao通过Mybatis xxxMapper文件与数据库交互。
+MGB.xml生成mapper接口，一些复杂的查询可以自行在mapper中定义。
+mybatis之所以能用，是因为在spring的配置文件applicationContext.xml配置文件中整合了mybatis，让
+spring容器启动时候，自动的扫描每一个mapper接口。
+controller、service、Dao这些组件都可以自动装配，Autowired
+在浏览器界面使用ajax来发送请求，使用js解析返回的json串，在页面中显示。
+maven实现依赖管理及构建，项目run as maven install 就可以在targert目录下打包出现war包。
+
+
 
