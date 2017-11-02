@@ -122,5 +122,8 @@ controller、service、Dao这些组件都可以自动装配，Autowired
 在浏览器界面使用ajax来发送请求，使用js解析返回的json串，在页面中显示。
 maven实现依赖管理及构建，项目run as maven install 就可以在targert目录下打包出现war包。
 
+2017年11月2日17:18:08
+删除了WebContent文件夹，因为当时设置的web配置伟/src/main/webapp
+
 FENGYUE版权所有。
 
