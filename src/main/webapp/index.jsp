@@ -410,7 +410,7 @@
 				});
 			});	
 		});
-		//点击删除员工信息
+		//点击更新员工信息，更新中的模态框按钮的更新事件
 		setTimeout(function(){
 			$("#emp_update_btn").click(function(){
 				
