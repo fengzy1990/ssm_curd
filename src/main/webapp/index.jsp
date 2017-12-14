@@ -335,6 +335,10 @@
 			$(document).on("click",".update_btn",function(){
 				//alert("edit");
 				//首先查出员工信息，然后查出部门信息，以下两种方式都可以
+				//每次弹出更新模态框时，清除之前验证提示和验证结果状态
+				$("#empUpdateModal form").find("*").removeClass(
+						"has-success has-error");
+				$("#empUpdateModal form").find(".help-block").text("");
 				getDepts("#empUpdateModal select");
 				//getDepts("#dept_update_select");
 				getEmp($(this).attr("update-id"));
