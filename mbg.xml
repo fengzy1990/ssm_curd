@@ -13,8 +13,8 @@
 		<!-- 配置数据库连接 -->
 
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/ssm_curd" userId="root"
-			password="DatabaseSql">
+			connectionURL="jdbc:mysql://localhost:3306/ssm_curd" userId="test"
+			password="test">
 		</jdbcConnection>
 
 		<javaTypeResolver>
